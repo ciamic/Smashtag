@@ -1,5 +1,5 @@
 //
-//  SmashtagUITests.swift
+//  CustomImageFlowLayout.swift
 //
 //  Copyright (c) 2017 michelangelo
 //
@@ -21,31 +21,31 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import XCTest
+import UIKit
 
-class SmashtagUITests: XCTestCase {
-        
-    override func setUp() {
-        super.setUp()
-        
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-        
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
-        // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
-        XCUIApplication().launch()
+/// A simple custom flow layout for UICollectionViews
 
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+class TweetCustomImageFlowLayout: UICollectionViewFlowLayout {
+    
+    // MARK: - Constants
+    
+    fileprivate struct Constants {
+        static let MinimumLineSpacing: CGFloat = 0.0
+        static let MinimumInterimSpacing: CGFloat = 0.0
+        static let ScrollDirection = UICollectionViewScrollDirection.vertical
+    }
+     
+    // MARK: - Life Cycle
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupLayout()
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    fileprivate func setupLayout() {
+        minimumLineSpacing = Constants.MinimumLineSpacing
+        minimumInteritemSpacing = Constants.MinimumInterimSpacing
+        scrollDirection = Constants.ScrollDirection
     }
-    
-    func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
+
 }
