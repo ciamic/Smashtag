@@ -36,10 +36,11 @@ The purpose of the project is to learn how to persist application data and how t
 - The [Stanford Twitter Framework][stanford-twitter-framework-v3] is required in order to query Twitter informations.
 
 ## License
-Smashtag is released under the MIT license. See [LICENSE](LICENSE) for details.
+Smashtag is released under the MIT license. See [LICENSE](LICENSE) for details.  
+
 The [Stanford Twitter Framework][stanford-twitter-framework-v3] is licensed under a [Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States License](https://creativecommons.org/licenses/by-nc-sa/3.0/us/).
 
-[stanford-twitter-framework-v3]:https://web.stanford.edu/class/cs193p/Twitter3.zip
+[stanford-twitter-framework-v3]:http://web.stanford.edu/class/cs193p/Twitter3.zip
 [swift-image]:https://img.shields.io/badge/swift-3.0-orange.svg
 [swift-url]: https://swift.org/
 [license-image]:https://img.shields.io/badge/License-MIT-blue.svg
