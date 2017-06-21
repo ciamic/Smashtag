@@ -18,12 +18,12 @@ The purpose of the project is to learn how to persist application data and how t
   
 
 [![Simulator Screen Shot 20 Jun 2017, 21.27.32.png](https://s7.postimg.org/go0bmkn1n/Simulator_Screen_Shot_20_Jun_2017_21.27.32.png)]()
-[![Simulator_Screen_Shot_20_Jun_2017, 21.30.46.png](https://s3.postimg.org/n9lndoc7j/Simulator_Screen_Shot_20_Jun_2017_21.30.46.png)]()
-[![Simulator_Screen_Shot_20_Jun_2017, 21.34.31.png](https://s3.postimg.org/jv82ba66n/Simulator_Screen_Shot_20_Jun_2017_21.34.31.png)]()
-[![Simulator_Screen_Shot_20_Jun_2017, 21.34.47.png](https://s3.postimg.org/uw37gayfj/Simulator_Screen_Shot_20_Jun_2017_21.34.47.png)]()
-[![Simulator_Screen_Shot_20_Jun_2017, 21.35.18.png](https://s3.postimg.org/or73p8gy7/Simulator_Screen_Shot_20_Jun_2017_21.35.18.png)]()
-[![Simulator_Screen_Shot_20_Jun_2017, 21.35.25.png](https://s3.postimg.org/sc2z8glhr/Simulator_Screen_Shot_20_Jun_2017_21.35.25.png)]()
-[![Simulator_Screen_Shot_20_Jun_2017, 21.35.42.png](https://s3.postimg.org/nnmzd9wb3/Simulator_Screen_Shot_20_Jun_2017_21.35.42.png)]()
+[![Simulator_Screen_Shot_20_Jun_2017, 21.30.46.png](https://s3.postimg.org/mwu97htxv/Simulator_Screen_Shot_20_Jun_2017_21.30.46.png)]()
+[![Simulator_Screen_Shot_20_Jun_2017, 21.34.31.png](https://s3.postimg.org/u5ahaiw2b/Simulator_Screen_Shot_20_Jun_2017_21.34.31.png)]()
+[![Simulator_Screen_Shot_20_Jun_2017, 21.34.47.png](https://s3.postimg.org/cgiqiwkb7/Simulator_Screen_Shot_20_Jun_2017_21.34.47.png)]()
+[![Simulator_Screen_Shot_20_Jun_2017, 21.35.18.png](https://s3.postimg.org/p3yhvez83/Simulator_Screen_Shot_20_Jun_2017_21.35.18.png)]()
+[![Simulator_Screen_Shot_20_Jun_2017, 21.35.25.png](https://s3.postimg.org/phztv0jbn/Simulator_Screen_Shot_20_Jun_2017_21.35.25.png)]()
+[![Simulator_Screen_Shot_20_Jun_2017, 21.35.42.png](https://s3.postimg.org/4vb49ozwz/Simulator_Screen_Shot_20_Jun_2017_21.35.42.png)]()
   
   
 ## Requirements
