@@ -27,8 +27,8 @@ The purpose of the project is to learn how to persist application data and how t
   
   
 ## Requirements
-- iOS 9.0+
-- Xcode 8.0
+- iOS 10.0+
+- Xcode 8.0+
 - Twitter account
 - The [Stanford Twitter Framework][stanford-twitter-framework-v3] to be included in a Workspace with the Smashtag Project (included in the repository).
 
