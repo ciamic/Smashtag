@@ -59,6 +59,7 @@ class TweetTableViewController: UITableViewController {
     @IBOutlet var resultsView: UIView!
     @IBOutlet weak var resultsNoSearchLabel: UILabel!
     @IBOutlet weak var resultsNoResultsLabel: UILabel!
+    @IBOutlet weak var resultsErrorOccurredLabel: UILabel!
     
     // MARK: - Private Properties
     
@@ -109,9 +110,7 @@ class TweetTableViewController: UITableViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
         if tweets.isEmpty {
-            tableView.backgroundView = resultsView
-            resultsNoSearchLabel.isHidden = false
-            resultsNoResultsLabel.isHidden = true
+            updateTableViewResultsView(with: .EmptySearch)
         }
         tableView.isScrollEnabled = false
         tableView.delegate = self
@@ -211,25 +210,45 @@ class TweetTableViewController: UITableViewController {
     }
     
     /// called after seaching for tweets in order to stop activity indicators
-    private func endRefreshing() {
+    private func endRefreshing(errorHasOccurred: Bool) {
         loadingSpinner.stopAnimating()
         refreshControl?.endRefreshing()
-        updateTableViewResultsView()
+        if searchText == nil || (searchText != nil && searchText!.isEmpty) {
+            updateTableViewResultsView(with: .EmptySearch)
+        } else if errorHasOccurred {
+            updateTableViewResultsView(with: .SearchWithError)
+        } else {
+            updateTableViewResultsView(with: .SuccessfulSearch)
+        }
     }
     
-    private func updateTableViewResultsView() {
-        if tweets.isEmpty {
-            tableView.backgroundView = resultsView
-            tableView.separatorStyle = .none
-            tableView.isScrollEnabled = false
-            resultsNoSearchLabel.isHidden = true
-            resultsNoResultsLabel.isHidden = false
-        } else {
-            tableView.separatorStyle = .singleLine
-            tableView.isScrollEnabled = true
-            tableView.backgroundView = nil
-            resultsNoSearchLabel.isHidden = true
-            resultsNoResultsLabel.isHidden = true
+    // Reasons for updating the table view
+    fileprivate enum TableViewUpdateReason {
+        case EmptySearch
+        case SearchWithError
+        case SuccessfulSearch
+    }
+    
+    private func updateTableViewResultsView(with reason: TableViewUpdateReason) {
+        resultsNoSearchLabel.isHidden = true
+        resultsNoResultsLabel.isHidden = true
+        resultsErrorOccurredLabel.isHidden = true
+        tableView.backgroundView = resultsView
+        tableView.isScrollEnabled = false
+        tableView.separatorStyle = .none
+        switch reason {
+        case .EmptySearch:
+            resultsNoSearchLabel.isHidden = false
+        case .SearchWithError:
+            resultsErrorOccurredLabel.isHidden = false
+        case .SuccessfulSearch:
+            if tweets.isEmpty {
+                resultsNoResultsLabel.isHidden = false
+            } else {
+                tableView.separatorStyle = .singleLine
+                tableView.isScrollEnabled = true
+                tableView.backgroundView = nil
+            }
         }
     }
     
@@ -253,22 +272,42 @@ class TweetTableViewController: UITableViewController {
         if let request = requestForTweets() {
             lastTwitterRequest = request
             startRefreshing()
-            request.fetchTweets { [weak self] newTweets in
+            request.fetchTweets { [weak self] newTweets, error in
                 DispatchQueue.main.async {
-                    if request == self?.lastTwitterRequest {
-                        if let searchText = self?.searchText, searchText.characters.count > 0 {
-                            TweetHistory().add(searchText)
+                    if let error = error {
+                        switch error {
+                        case TwitterAccountError.noAccountsAvailable,
+                             TwitterAccountError.noPermissionGranted:
+                            let alertController = UIAlertController(title: AlertControllerMessages.Error,
+                                                                    message: AlertControllerMessages.NoAccountsAvailableOrNoPermissionGranted,
+                                                                    preferredStyle: .alert)
+                            let goToSettings = UIAlertAction(title: AlertControllerMessages.Settings, style: .default) { alertAction in
+                                UIApplication.shared.open(URL(string: AlertControllerMessages.UrlToTwitterSettings)!)
+                            }
+                            let cancel = UIAlertAction(title: AlertControllerMessages.Cancel, style: .cancel, handler: nil)
+                            alertController.addAction(goToSettings)
+                            alertController.addAction(cancel)
+                            
+                            self?.present(alertController, animated: true, completion: nil)
+                        default:
+                            debugPrint(error.localizedDescription)
                         }
-                        if !newTweets.isEmpty {
-                            self?.insertTweets(newTweets)
+                    } else {
+                        if request == self?.lastTwitterRequest {
+                            if let searchText = self?.searchText, searchText.characters.count > 0 {
+                                TweetHistory().add(searchText)
+                            }
+                            if !newTweets.isEmpty {
+                                self?.insertTweets(newTweets)
+                            }
                         }
-                        self?.endRefreshing()
-                        self?.updateVisibilityForBarButtonItems()
                     }
+                    self?.endRefreshing(errorHasOccurred: error != nil)
+                    self?.updateVisibilityForBarButtonItems()
                 }
             }
         } else {
-            endRefreshing()
+            endRefreshing(errorHasOccurred: true)
         }
     }
     
@@ -318,9 +357,14 @@ extension TweetTableViewController {
         let tweet = tweets[indexPath.section][indexPath.row]
         if let tweetCell = cell as? TweetTableViewCell {
             tweetCell.tweet = tweet
+            cell.accessoryType = tweetHasMentions(tweet) ? .disclosureIndicator : .none
         }
      
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return tweetHasMentions(tweets[indexPath.section][indexPath.row])
     }
     
 }

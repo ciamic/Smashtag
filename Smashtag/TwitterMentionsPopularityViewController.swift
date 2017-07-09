@@ -80,9 +80,9 @@ class TwitterMentionsPopularityViewController: CoreDataTableViewController<Menti
         }
         let request: NSFetchRequest<Mention> = Mention.fetchRequest()
         //below the "right" predicate as required in the assignment.
-        request.predicate = NSPredicate(format: "any searchTerm = %@ AND numberOfMentions > 1", searchTerm)
+        //request.predicate = NSPredicate(format: "any searchTerm = %@ AND numberOfMentions > 1", searchTerm)
         //while the assignment required to retreive only mentions with > 1 citations, for debug purpose we get them all
-        //request.predicate = NSPredicate(format: "any searchTerm = %@", searchTerm)
+        request.predicate = NSPredicate(format: "any searchTerm = %@", searchTerm)
         let mentionTypeSortDescriptor = NSSortDescriptor(key: "type", ascending: false)
         let popularitySortDescriptior = NSSortDescriptor(key: "numberOfMentions", ascending: false)
         let alphabeticalCaseInsensitiveSortDescriptor = NSSortDescriptor(key: "keyword",

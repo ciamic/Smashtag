@@ -22,6 +22,14 @@ import CoreLocation
 
 private var twitterAccount: ACAccount?
 
+// Enum added from original cs193p Instructor implementation in order to handle 
+// cases in which either the user did not have any Tweeter account or did not
+// give the permission to access to Tweeter accounts informations.
+public enum TwitterAccountError: Error {
+    case noAccountsAvailable
+    case noPermissionGranted
+}
+
 public class Request: NSObject
 {
     public let requestType: String
@@ -63,8 +71,8 @@ public class Request: NSObject
     // convenience "fetch" for when self is a request that returns Tweet(s)
     // handler is not necessarily invoked on the main queue
     
-    public func fetchTweets(_ handler: @escaping ([Tweet]) -> Void) {
-        fetch { results in
+    public func fetchTweets(_ handler: @escaping ([Tweet], Error?) -> Void) {
+        fetch { results, error in
             var tweets = [Tweet]()
             var tweetArray: NSArray?
             if let dictionary = results as? NSDictionary {
@@ -83,7 +91,7 @@ public class Request: NSObject
                     }
                 }
             }
-            handler(tweets)
+            handler(tweets, error)
         }
     }
     
@@ -93,7 +101,7 @@ public class Request: NSObject
     // calls the handler (not necessarily on the main queue)
     //   with the JSON results converted to a Property List
     
-    public func fetch(_ handler: @escaping (PropertyList?) -> Void) {
+    public func fetch(_ handler: @escaping (PropertyList?, Error?) -> Void) {
         performTwitterRequest(.GET, handler: handler)
     }
     
@@ -133,7 +141,7 @@ public class Request: NSObject
     // then calls the other version of this method that takes an SLRequest
     // handler is not necessarily called on the main queue
     
-    func performTwitterRequest(_ method: SLRequestMethod, handler: @escaping (PropertyList?) -> Void) {
+    func performTwitterRequest(_ method: SLRequestMethod, handler: @escaping (PropertyList?, Error?) -> Void) {
         let jsonExtension = (self.requestType.range(of: Constants.JSONExtension) == nil) ? Constants.JSONExtension : ""
         let url = URL(string: "\(Constants.twitterURLPrefix)\(self.requestType)\(jsonExtension)")
         if let request = SLRequest(forServiceType: SLServiceTypeTwitter, requestMethod: method, url: url, parameters: parameters) {
@@ -145,7 +153,7 @@ public class Request: NSObject
     // unpackages the JSON response into a Property List
     // and calls handler (not necessarily on the main queue)
     
-    func performTwitterSLRequest(_ request: SLRequest, handler: @escaping (PropertyList?) -> Void) {
+    func performTwitterSLRequest(_ request: SLRequest, handler: @escaping (PropertyList?, Error?) -> Void) {
         if let account = twitterAccount {
             request.account = account
             request.perform { (jsonResponse, httpResponse, _) in
@@ -165,7 +173,7 @@ public class Request: NSObject
                 self.synchronize {
                     self.captureFollowonRequestInfo(propertyListResponse)
                 }
-                handler(propertyListResponse)
+                handler(propertyListResponse, nil)
             }
         } else {
             let accountStore = ACAccountStore()
@@ -178,12 +186,12 @@ public class Request: NSObject
                     } else {
                         let error = "Couldn't discover Twitter account type."
                         self.log(error)
-                        handler(error)
+                        handler(nil, TwitterAccountError.noAccountsAvailable)
                     }
                 } else {
                     let error = "Access to Twitter was not granted."
                     self.log(error)
-                    handler(error)
+                    handler(nil, TwitterAccountError.noPermissionGranted)
                 }
             }
         }

@@ -88,3 +88,11 @@ enum CoreDataMentionType: String {
 struct ManagedDocument {
     static let DefaultDatabaseName = "Default Tweet Database"
 }
+
+struct AlertControllerMessages {
+    static let Error = "Error"
+    static let Cancel = "Cancel"
+    static let Settings = "Settings"
+    static let UrlToTwitterSettings = "App-Prefs:root=TWITTER"
+    static let NoAccountsAvailableOrNoPermissionGranted = "No Twitter accounts available or no permission granted to access accounts informations. Please consider associating a new account or granting permissions for the existing ones."
+}
