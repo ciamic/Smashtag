@@ -159,18 +159,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <textField key="tableHeaderView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Twitter Search Text" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" id="JpO-Bq-6sr">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <accessibility key="accessibilityConfiguration">
-                                <accessibilityTraits key="traits" searchField="YES"/>
-                            </accessibility>
-                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Twitter Search Text" id="c7o-sO-BXf">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <textInputTraits key="textInputTraits"/>
-                        </textField>
+                            <scopeButtonTitles>
+                                <string>Title</string>
+                                <string>Title</string>
+                            </scopeButtonTitles>
+                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Tweet" rowHeight="100" id="A79-QU-dRf" customClass="TweetTableViewCell" customModule="Smashtag" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="58" width="375" height="100"/>
+                                <rect key="frame" x="0.0" y="72" width="375" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="A79-QU-dRf" id="069-2e-bLp">
                                     <rect key="frame" x="0.0" y="0.0" width="342" height="99.5"/>
@@ -272,7 +272,7 @@
                         <outlet property="resultsNoResultsLabel" destination="HF7-Iv-dou" id="oHC-My-DTb"/>
                         <outlet property="resultsNoSearchLabel" destination="xDL-AS-wAe" id="iYn-Bt-ybq"/>
                         <outlet property="resultsView" destination="Fsf-qF-uP4" id="2ad-Ko-Pkb"/>
-                        <outlet property="searchTextField" destination="JpO-Bq-6sr" id="L6P-Wq-sPQ"/>
+                        <outlet property="searchBar" destination="c7o-sO-BXf" id="BHg-Wg-QfG"/>
                         <segue destination="I4m-Gh-hNm" kind="show" identifier="ShowTweetsCollectionView" id="3E6-eD-di0"/>
                     </connections>
                 </tableViewController>

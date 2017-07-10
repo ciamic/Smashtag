@@ -36,8 +36,8 @@ class TweetTableViewController: UITableViewController {
     //the search term
     var searchText: String? {
         didSet {
-            searchTextField?.text = searchText
-            searchTextField?.resignFirstResponder()
+            searchBar?.text = searchText
+            searchBar?.resignFirstResponder()
             lastTwitterRequest = nil
             tweets.removeAll()
             tableView.reloadData()
@@ -48,10 +48,10 @@ class TweetTableViewController: UITableViewController {
     
     // MARK: - Outlets
     
-    @IBOutlet weak var searchTextField: UITextField! {
+    @IBOutlet weak var searchBar: UISearchBar! {
         didSet {
-            searchTextField.delegate = self
-            searchTextField.text = searchText
+            searchBar.delegate = self
+            searchBar.text = searchText
         }
     }
 
@@ -369,14 +369,17 @@ extension TweetTableViewController {
     
 }
 
-extension TweetTableViewController: UITextFieldDelegate {
+extension TweetTableViewController: UISearchBarDelegate {
     
-    // MARK: - UITextFieldDelegate
+    // MARK: - UISearchBarDelegate
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        searchText = textField.text
+    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        searchBar.resignFirstResponder()
         return true
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchText = searchBar.text
     }
     
 }
