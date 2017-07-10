@@ -66,7 +66,7 @@ struct Constants {
 
 struct History {
     static let HistoryKey = "TweetHistory.History"
-    static let MaxNoOfSearches = 3
+    static let MaxNoOfSearches = 10
     static let HistoryRemovedNotification = "TweetHistory.RemovedNotification"
     static let HistoryAddedNotification = "TweetHistory.AddedNotification"
     static let HistoryRemovedNotificationValue = "TweetHistory.RemovedNotificationValue"
