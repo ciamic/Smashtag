@@ -4,7 +4,9 @@
 [![Swift Version][swift-image]][swift-url]
 [![License][license-image]][license-url]
 [![Platform][platform-image]][platform-url]
-[![PRs Welcome][prswelcome-image]][prswelcome-url]
+[![PRs Welcome][prswelcome-image]][prswelcome-url]  
+  
+[![Download on the App Store](https://s18.postimg.org/r6olllkp5/appstore.png)](https://itunes.apple.com/us/app/smashtag/id1257925504)
 
 Smashtag is an app developed as part of the [Stanford University's CS193p 2017 course](https://itunes.apple.com/us/course/developing-ios-10-apps-with-swift/id1198467120), in particular is the result of the [Programming Assignment IV](https://www.scribd.com/document/351739364/Programming-Project-4-Smashtag-Mentions) and [Programming Assignment V](https://www.scribd.com/document/351739353/Programming-Project-5-Smashtag-Mention-Popularity).  
 
