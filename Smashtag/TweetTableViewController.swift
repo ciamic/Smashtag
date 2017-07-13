@@ -109,7 +109,8 @@ class TweetTableViewController: UITableViewController {
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
-        if tweets.isEmpty {
+        if tweets.isEmpty && (searchText == nil || searchText != nil && searchText!.isEmpty) {
+            // no tweets and no search text
             updateTableViewResultsView(with: .EmptySearch)
         }
         tableView.isScrollEnabled = false
@@ -210,16 +211,9 @@ class TweetTableViewController: UITableViewController {
     }
     
     /// called after seaching for tweets in order to stop activity indicators
-    private func endRefreshing(errorHasOccurred: Bool) {
+    private func endRefreshing() {
         loadingSpinner.stopAnimating()
         refreshControl?.endRefreshing()
-        if searchText == nil || (searchText != nil && searchText!.isEmpty) {
-            updateTableViewResultsView(with: .EmptySearch)
-        } else if errorHasOccurred {
-            updateTableViewResultsView(with: .SearchWithError)
-        } else {
-            updateTableViewResultsView(with: .SuccessfulSearch)
-        }
     }
     
     // Reasons for updating the table view
@@ -260,6 +254,38 @@ class TweetTableViewController: UITableViewController {
         }
     }
     
+    fileprivate func handleSearchError(_ error: Error) {
+        var message: String
+        var alertActionOk: UIAlertAction!
+        var alertActionCancel: UIAlertAction?
+        switch error {
+        case TwitterAccountError.noAccountsAvailable,
+             TwitterAccountError.noPermissionGranted:
+            message = AlertControllerMessages.NoAccountsAvailableOrNoPermissionGranted
+            alertActionOk = UIAlertAction(title: AlertControllerMessages.Settings, style: .default) { alertAction in
+                UIApplication.shared.open(URL(string: AlertControllerMessages.UrlToTwitterSettings)!)
+            }
+            alertActionCancel = UIAlertAction(title: AlertControllerMessages.Cancel, style: .cancel, handler: nil)
+        case TwitterAccountError.noResponseFromTwitter:
+            message = AlertControllerMessages.InternetConnectionOrTwitterNotAvailable
+            alertActionOk = UIAlertAction(title: AlertControllerMessages.Ok, style: .default, handler: nil)
+        default:
+            message = AlertControllerMessages.GenericErrorOccurred
+            alertActionOk = UIAlertAction(title: AlertControllerMessages.Ok, style: .default, handler: nil)
+        }
+        
+        let alertController = UIAlertController(title: AlertControllerMessages.Error,
+                                                message: message,
+                                                preferredStyle: .alert)
+        alertController.addAction(alertActionOk)
+        if let alertActionCancel = alertActionCancel {
+            alertController.addAction(alertActionCancel)
+        }
+        
+        updateTableViewResultsView(with: .SearchWithError)
+        present(alertController, animated: true, completion: nil)
+    }
+    
     //note that this function resolves two of the most common problems with asynchronous requests:
     //1) memory cycle: we use weak self in order to not have a strong reference to self that keeps it in the heap.
     //When this can happen? For example if the network request goes off to the internet and the closure never gets
@@ -275,24 +301,9 @@ class TweetTableViewController: UITableViewController {
             request.fetchTweets { [weak self] newTweets, error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        switch error {
-                        case TwitterAccountError.noAccountsAvailable,
-                             TwitterAccountError.noPermissionGranted:
-                            let alertController = UIAlertController(title: AlertControllerMessages.Error,
-                                                                    message: AlertControllerMessages.NoAccountsAvailableOrNoPermissionGranted,
-                                                                    preferredStyle: .alert)
-                            let goToSettings = UIAlertAction(title: AlertControllerMessages.Settings, style: .default) { alertAction in
-                                UIApplication.shared.open(URL(string: AlertControllerMessages.UrlToTwitterSettings)!)
-                            }
-                            let cancel = UIAlertAction(title: AlertControllerMessages.Cancel, style: .cancel, handler: nil)
-                            alertController.addAction(goToSettings)
-                            alertController.addAction(cancel)
-                            
-                            self?.present(alertController, animated: true, completion: nil)
-                        default:
-                            debugPrint(error.localizedDescription)
-                        }
+                        self?.handleSearchError(error)
                     } else {
+                        // check that when the asynchronous call is made, the search is still relevant
                         if request == self?.lastTwitterRequest {
                             if let searchText = self?.searchText, searchText.characters.count > 0 {
                                 TweetHistory().add(searchText)
@@ -300,14 +311,16 @@ class TweetTableViewController: UITableViewController {
                             if !newTweets.isEmpty {
                                 self?.insertTweets(newTweets)
                             }
+                            self?.updateTableViewResultsView(with: .SuccessfulSearch)
                         }
                     }
-                    self?.endRefreshing(errorHasOccurred: error != nil)
+                    self?.endRefreshing()
                     self?.updateVisibilityForBarButtonItems()
                 }
             }
         } else {
-            endRefreshing(errorHasOccurred: true)
+            endRefreshing()
+            updateTableViewResultsView(with: .SearchWithError)
         }
     }
     
@@ -373,6 +386,16 @@ extension TweetTableViewController: UISearchBarDelegate {
     
     // MARK: - UISearchBarDelegate
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = searchText
+        searchBar.showsCancelButton = false
+        searchBar.resignFirstResponder()
+    }
+    
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
         searchBar.resignFirstResponder()
         return true
@@ -380,6 +403,7 @@ extension TweetTableViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchText = searchBar.text
+        searchBar.showsCancelButton = false
     }
     
 }

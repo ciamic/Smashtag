@@ -28,6 +28,8 @@ private var twitterAccount: ACAccount?
 public enum TwitterAccountError: Error {
     case noAccountsAvailable
     case noPermissionGranted
+    case noResponseFromTwitter
+    case errorParsingTwitterResponse
 }
 
 public class Request: NSObject
@@ -163,12 +165,16 @@ public class Request: NSObject
                     if propertyListResponse == nil {
                         let error = "Couldn't parse JSON response."
                         self.log(error)
-                        propertyListResponse = error
+                        //propertyListResponse = error
+                        handler(nil, TwitterAccountError.errorParsingTwitterResponse)
+                        return
                     }
                 } else {
                     let error = "No response from Twitter."
                     self.log(error)
-                    propertyListResponse = error
+                    //propertyListResponse = error
+                    handler(nil, TwitterAccountError.noResponseFromTwitter)
+                    return
                 }
                 self.synchronize {
                     self.captureFollowonRequestInfo(propertyListResponse)

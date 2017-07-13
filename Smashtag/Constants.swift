@@ -93,6 +93,9 @@ struct AlertControllerMessages {
     static let Error = "Error"
     static let Cancel = "Cancel"
     static let Settings = "Settings"
+    static let Ok = "Ok"
     static let UrlToTwitterSettings = "App-Prefs:root=TWITTER"
     static let NoAccountsAvailableOrNoPermissionGranted = "No Twitter accounts available or no permission granted to access accounts informations. Please consider associating a new account or granting permissions for the existing ones."
+    static let InternetConnectionOrTwitterNotAvailable = "No internet connection available or Twitter is not reachable. Please try again."
+    static let GenericErrorOccurred = "An error has occurred. Please try again."
 }
